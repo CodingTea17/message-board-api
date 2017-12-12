@@ -1,4 +1,5 @@
 class MessagesController < ApplicationController
+  before_action :authenticate_user!, except: [ :index ]
   include Response
 
   def index
