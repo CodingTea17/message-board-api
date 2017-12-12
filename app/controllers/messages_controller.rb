@@ -21,9 +21,15 @@ class MessagesController < ApplicationController
 
   def update
     @message = Message.find(params[:id])
-    if @message.update(message_params)
-      render status: 200, json: {
-        updated: "Your Message has been updated, Let the Spice Flow"
+    if @message.author === params[:author]
+      if @message.update(message_params)
+        render status: 200, json: {
+          updated: "Your Message has been updated, Let the Spice Flow"
+        }
+      end
+    else
+      render status: :unauthorized, json: {
+        not_authorized: "You are nont authorized to update this message"
       }
     end
   end
@@ -31,7 +37,13 @@ class MessagesController < ApplicationController
 
   def destroy
     @message = Message.find(params[:id])
-    json_response(@message.destroy)
+    if @message.author === params[:author]
+      json_response(@message.destroy)
+    else
+    render status: :unauthorized, json: {
+      not_authorized: "You are nont authorized to delete this message"
+    }
+    end
   end
 
   private
